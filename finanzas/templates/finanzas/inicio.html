@@ -1,0 +1,54 @@
+{% extends 'finanzas/base.html' %}
+{% load humanize %}
+{% block title %}Inicio - Gestor de Finanzas{% endblock %}
+
+{% block content %}
+    <div class="header">
+        Hola, {{ user.username }} | <a href="{% url 'logout' %}">Cerrar sesión</a>
+    </div>
+
+    <h1>Gestor de Gastos</h1>
+
+    <h2>Resumen general</h2>
+    <div class="resumen">
+        <div class="card ingresos"><b>Total ingresos:</b><br>${{ total_ingresos|intcomma }}</div>
+        <div class="card gastos"><b>Total gastos:</b><br>${{ total_gastos|intcomma }}</div>
+        <div class="card balance"><b>Balance:</b><br>${{ balance|intcomma }}</div>
+    </div>
+
+    <h2>Ingresos</h2>
+    <a href="{% url 'agregar_ingreso' %}" class="btn btn-ingreso">➕ Agregar ingreso</a>
+    <ul>
+        {% for i in ingresos %}
+        <li>
+            <span>{{ i.fecha }} - {{ i.categoria }}: ${{ i.monto|intcomma }}</span>
+            <div class="acciones">
+                <a href="{% url 'detalle_ingreso' i.id %}" class="btn-accion ver">Ver</a>
+                <a href="{% url 'editar_ingreso' i.id %}" class="btn-accion editar">Editar</a>
+                <a href="{% url 'eliminar_ingreso' i.id %}" class="btn-accion eliminar"
+                   onclick="return confirm('¿Seguro que deseas eliminar este ingreso?');">Eliminar</a>
+            </div>            
+        </li>
+        {% empty %}
+        <li class="empty">No hay ingresos registrados.</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Gastos</h2>
+    <a href="{% url 'agregar_gasto' %}" class="btn btn-gasto">➕ Agregar gasto</a>
+    <ul>
+        {% for g in gastos %}
+        <li>
+            <span>{{ g.fecha }} - {{ g.categoria }}: ${{ g.monto|intcomma }}</span>
+            <div class="acciones">
+                <a href="{% url 'detalle_gasto' g.id %}" class="btn-accion ver">Ver</a>
+                <a href="{% url 'editar_gasto' g.id %}" class="btn-accion editar">Editar</a>
+                <a href="{% url 'eliminar_gasto' g.id %}" class="btn-accion eliminar"
+                onclick="return confirm('¿Seguro que deseas eliminar este ingreso?');">Eliminar</a>
+            </div>
+        </li>
+        {% empty %}
+        <li class="empty">No hay gastos registrados.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

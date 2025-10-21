@@ -1,0 +1,92 @@
+{% extends 'finanzas/base.html' %}
+
+{% block title %}Estadísticas - Gestor de Finanzas{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Estadísticas</h1>
+
+    <div style="text-align:center; margin-bottom: 20px;">
+        <label for="tipo" style="font-weight:600; color:var(--text); margin-right:8px;">
+            Ver estadísticas de:
+        </label>
+        <select id="tipo" style="padding:8px 12px; border-radius:var(--radius); border:1px solid #d1d5db;">
+            <option value="gastos">Gastos</option>
+            <option value="ingresos">Ingresos</option>
+        </select>
+    </div>
+
+    <div style="width:100%; max-width:400px; margin:0 auto;">
+        <canvas id="grafico" style="max-height:300px;"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const gastosData = {{ gastos_por_categoria|safe }};
+    const ingresosData = {{ ingresos_por_categoria|safe }};
+
+    const colores = {
+        blue: getComputedStyle(document.documentElement).getPropertyValue('--blue').trim(),
+        red: getComputedStyle(document.documentElement).getPropertyValue('--red').trim(),
+        green: getComputedStyle(document.documentElement).getPropertyValue('--green').trim(),
+        balance: getComputedStyle(document.documentElement).getPropertyValue('--balance-bg').trim()
+    };
+
+    function generarColores(cantidad) {
+        const paleta = [colores.blue, colores.red, colores.green, colores.balance];
+        return Array.from({ length: cantidad }, (_, i) => paleta[i % paleta.length]);
+    }
+
+    const ctx = document.getElementById('grafico').getContext('2d');
+    let chart = null;
+
+    function crearGrafico(tipo) {
+        const data = tipo === 'gastos' ? gastosData : ingresosData;
+        const labels = Object.keys(data);
+        const valores = Object.values(data);
+
+        if (chart) {
+            chart.destroy();
+        }
+
+        chart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: valores,
+                    backgroundColor: generarColores(labels.length),
+                    borderColor: '#fff',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--text'),
+                            font: { family: 'Inter', size: 14 }
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: tipo === 'gastos' ? 'Distribución de Gastos por Categoría' : 'Distribución de Ingresos por Categoría',
+                        color: getComputedStyle(document.documentElement).getPropertyValue('--text'),
+                        font: { size: 18, weight: 'bold', family: 'Inter' }
+                    }
+                }
+            }
+        });
+    }
+
+    crearGrafico('gastos');
+
+    document.getElementById('tipo').addEventListener('change', (e) => {
+        crearGrafico(e.target.value);
+    });
+</script>
+{% endblock %}

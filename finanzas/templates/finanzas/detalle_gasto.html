@@ -1,0 +1,20 @@
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle del Gasto</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'finanzas/detalles.css' %}">
+</head>
+<body>
+    <h1>Detalle del Gasto 💸</h1>
+
+    <p><strong>Categoría:</strong> {{ gasto.categoria }}</p>
+    <p><strong>Monto:</strong> ${{ gasto.monto|intcomma }}</p>
+    <p><strong>Fecha:</strong> {{ gasto.fecha }}</p>
+    <p><strong>Descripción:</strong> {{ gasto.descripcion }}</p>
+
+    <a href="{% url 'inicio' %}">⬅ Volver</a>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Agregar Ingreso</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'finanzas/styles.css' %}">
+</head>
+<body>
+    <h1>Agregar Ingreso</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Guardar</button>
+    </form>
+
+    {% if form.errors %}
+        <ul>
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <a href="{% url 'inicio' %}">⬅ Volver</a>
+</body>
+</html>

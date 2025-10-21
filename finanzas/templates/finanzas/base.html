@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Gestor de Finanzas{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'finanzas/inicio.css' %}">
+</head>
+<body>
+    <div class="container">
+
+        <nav class="navbar">
+            <ul class="nav-links">
+                <li><a href="{% url 'inicio' %}">Inicio</a></li>
+                <li><a href="{% url 'estadisticas' %}">Estadísticas</a></li>
+                {% if user.is_staff %}
+                    <li><a href="/admin/">Administración</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+
+        {% block content %}
+        {% endblock %}
+
+    </div>
+</body>
+</html>
